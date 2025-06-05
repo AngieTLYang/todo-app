@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Simple ToDo App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background: #f7f7f7;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    form {
+      display: flex;
+      margin-bottom: 20px;
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px 0 0 4px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      background-color: #28a745;
+      color: white;
+      cursor: pointer;
+      border-radius: 0 4px 4px 0;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    li {
+      background: white;
+      padding: 12px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 4px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    li.done {
+      text-decoration: line-through;
+      color: #888;
+    }
+    li button {
+      background-color: #dc3545;
+      border: none;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    li button:hover {
+      background-color: #c82333;
+    }
+    label {
+      flex: 1;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Simple ToDo App</h1>
+  <form id="todoForm">
+      <input type="text" id="taskInput" placeholder="Enter a new task..." required />
+      <input type="date" id="deadlineInput" />
+      <button type="submit">Add</button>
+  </form>
+
+  <ul id="todoList"></ul>
+
+  <script>
+    const apiUrl = "http://localhost:5144/api/todo";
+
+    async function fetchTodos() {
+      const res = await fetch(apiUrl);
+      const todos = await res.json();
+      return todos;
+    }
+
+    async function addTodo(task, deadline) {
+        const res = await fetch(apiUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ task: task, isDone: false, deadline: deadline || null })
+        });
+        return await res.json();
+    }
+
+    async function updateTodo(id, isDone) {
+      const res = await fetch(`${apiUrl}/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isDone: isDone })
+      });
+      return await res.json();
+    }
+
+    async function deleteTodo(id) {
+      await fetch(`${apiUrl}/${id}`, {
+        method: "DELETE"
+      });
+    }
+
+    function renderTodos(todos) {
+        const ul = document.getElementById("todoList");
+        ul.innerHTML = "";
+
+        todos.sort((a, b) => {
+            if (!a.deadline) return 1;
+            if (!b.deadline) return -1;
+            return new Date(a.deadline) - new Date(b.deadline);
+        });
+
+        todos.forEach(todo => {
+            const li = document.createElement("li");
+            li.className = todo.isDone ? "done" : "";
+            li.dataset.id = todo.id;
+
+            const label = document.createElement("label");
+
+            // Create the checkbox
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.checked = todo.isDone;
+            checkbox.style.marginRight = "10px";
+
+            checkbox.addEventListener("change", async () => {
+                await updateTodo(todo.id, checkbox.checked);
+                loadTodos();
+            });
+
+            label.appendChild(checkbox);
+
+            // Task text
+            const taskSpan = document.createElement("span");
+            taskSpan.textContent = todo.task;
+            label.appendChild(taskSpan);
+
+            // Deadline display (if any)
+            if (todo.deadline) {
+                const deadlineSpan = document.createElement("span");
+                const formattedDate = new Date(todo.deadline).toLocaleDateString();
+                deadlineSpan.textContent = ` (Due: ${formattedDate})`;
+                deadlineSpan.style.marginLeft = "8px";
+                deadlineSpan.style.fontSize = "0.9em";
+                deadlineSpan.style.color = "#555";
+                label.appendChild(deadlineSpan);
+            }
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.textContent = "Delete";
+            deleteBtn.addEventListener("click", async () => {
+                await deleteTodo(todo.id);
+                loadTodos();
+            });
+
+            li.appendChild(label);
+            li.appendChild(deleteBtn);
+            ul.appendChild(li);
+        });
+    }
+
+    async function loadTodos() {
+      const todos = await fetchTodos();
+      renderTodos(todos);
+    }
+
+    document.getElementById("todoForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const taskInput = document.getElementById("taskInput");
+        const deadlineInput = document.getElementById("deadlineInput");
+        const task = taskInput.value.trim();
+        const deadline = deadlineInput.value;
+
+        if (task) {
+            await addTodo(task, deadline);
+            taskInput.value = "";
+            deadlineInput.value = "";
+            loadTodos();
+        }
+    });
+
+    // Load todos on page load
+    loadTodos();
+  </script>
+</body>
+</html>
