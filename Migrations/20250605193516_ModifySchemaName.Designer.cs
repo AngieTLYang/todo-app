@@ -10,8 +10,8 @@ using ToDoApp.Data;
 namespace ToDoApp.Migrations
 {
     [DbContext(typeof(ToDoContext))]
-    [Migration("20250531102249_AddDatesToToDoItem")]
-    partial class AddDatesToToDoItem
+    [Migration("20250605193516_ModifySchemaName")]
+    partial class ModifySchemaName
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -19,7 +19,7 @@ namespace ToDoApp.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.5");
 
-            modelBuilder.Entity("ToDoItem", b =>
+            modelBuilder.Entity("ToDoApp.Models.ToDoItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -28,14 +28,14 @@ namespace ToDoApp.Migrations
                     b.Property<string>("Deadline")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("EnterDate")
-                        .HasColumnType("TEXT");
-
                     b.Property<bool>("IsDone")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Task")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("enter_date")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

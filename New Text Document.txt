@@ -1,0 +1,7 @@
+| Username | Email                                         | Plaintext Password | SHA-256 Hashed Password                                            |
+| -------- | --------------------------------------------- | ------------------ | ------------------------------------------------------------------ |
+| alice    | [alice@example.com](mailto:alice@example.com) | `password123`      | `ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f` |
+| bob      | [bob@example.com](mailto:bob@example.com)     | `qwerty!@#`        | `84c4e92f676a4b4326bb68108cf1bc9947d7d5b3be03ce2461a872e397750b19` |
+| carol    | [carol@example.com](mailto:carol@example.com) | `letmein456`       | `3b3fdc05ff54ea0228669e02cdb65f2d7207e70b1e62a24b5a0b26dd2d0a7e1d` |
+| dave     | [dave@example.com](mailto:dave@example.com)   | `1234abcd`         | `73399cd60d8e740c36bc51d030bfc918a649c5de62f2fe979dce1d51f0613b08` |
+| eve      | [eve@example.com](mailto:eve@example.com)     | `helloWorld!`      | `ada13168883c61d4c3312317464b13ea3ad38d9d8f5d99cba5f6826eb57ddf3a` |

@@ -1,6 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ToDoApp.Dtos;
+using ToDoApp.Data;
+using ToDoApp.Models;
+using System.Security.Cryptography;
+using System.Text;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -50,4 +54,63 @@ public class ToDoController : ControllerBase
 
         return Ok(existingItem);
     }
+}
+
+[ApiController]
+[Route("api/[controller]")]
+public class AccountController : ControllerBase
+{
+    private readonly ToDoContext _context;
+
+    public AccountController(ToDoContext context)
+    {
+        _context = context;
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Account>>> Get()
+    {
+        var accounts = await _context.Set<Account>().ToListAsync();
+        return Ok(accounts);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<Account>> Post(Account account)
+    {
+        _context.Add(account);
+        await _context.SaveChangesAsync();
+        return CreatedAtAction(nameof(Post), new { id = account.Id }, account);
+    }
+
+    [HttpPost("login")]
+    public IActionResult Login([FromBody] LoginRequest request)
+    {
+        Console.WriteLine($"Login attempt: Username={request.Username}, Password={request.Password}");
+        var user = _context.Accounts.FirstOrDefault(a => a.Username == request.Username);
+        if (user == null)
+            return Unauthorized();
+
+        var hashed = ComputeSha256Hash(request.Password);
+
+        if (user.PasswordHash != hashed)
+            return Unauthorized();
+
+        return Ok(new { message = "Login successful" });
+    }
+
+    public string ComputeSha256Hash(string rawData)
+    {
+        using (SHA256 sha256Hash = SHA256.Create())
+        {
+            byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
+            return BitConverter.ToString(bytes).Replace("-", "").ToLowerInvariant();
+        }
+    }
+
+    public class LoginRequest
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
+    }
+
 }
