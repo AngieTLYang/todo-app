@@ -18,9 +18,40 @@ public class ToDoController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ToDoItem>>> Get()
+    public async Task<ActionResult<IEnumerable<ToDoItem>>> Get([FromQuery] string username)
     {
-        return await _context.ToDoItems.ToListAsync();
+        try
+        {
+            if (string.IsNullOrEmpty(username))
+            {
+                return BadRequest("Username query parameter is required.");
+            }
+
+            var account = await _context.Accounts
+                .FirstOrDefaultAsync(acc => acc.Username == username);
+
+            if (account == null)
+            {
+                return NotFound("Account not found");
+            }
+
+            var todos = await _context.ToDoItems
+                .Where(todo => todo.AccountId == account.Id)
+                .Select(t => new
+                {
+                    t.Id,
+                    t.Task,
+                    t.IsDone,
+                    t.Deadline
+                }).ToListAsync();
+
+            return Ok(todos);
+        }
+        catch (Exception ex)
+        {
+            // Return error message in a way that's easy to debug
+            return StatusCode(500, $"Server error: {ex.Message}");
+        }
     }
 
     [HttpPost]
@@ -95,7 +126,11 @@ public class AccountController : ControllerBase
         if (user.PasswordHash != hashed)
             return Unauthorized();
 
-        return Ok(new { message = "Login successful" });
+        return Ok(new
+        {
+            message = "Login successful",
+            accountId = user.Id,
+        });
     }
 
     public string ComputeSha256Hash(string rawData)

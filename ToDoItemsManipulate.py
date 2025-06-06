@@ -25,21 +25,25 @@ print("Columns:")
 for col in schema:
     col_id, name, col_type, notnull, default_value, pk = col
     print(f"  {name} ({col_type}) {'PRIMARY KEY' if pk else ''}")
+
 '''
-# Step 1: Drop the existing table if it exists
+# Drop the existing table if it exists
 cursor.execute("DROP TABLE IF EXISTS ToDoItems")
 
-# Step 2: Create the new table with additional fields
+# Create the new table with additional fields
 cursor.execute("""
 CREATE TABLE ToDoItems (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    account_id INTEGER NOT NULL,
     task TEXT NOT NULL,
     isDone BOOLEAN NOT NULL,
     enter_date TEXT,     -- ISO format like '2025-05-31'
-    deadline TEXT       -- ISO format or any format you prefer
+    deadline TEXT,       -- ISO format or any format you prefer
+    FOREIGN KEY (account_id) REFERENCES Accounts(id) ON DELETE CASCADE           
 )
 """)
 '''
+
 cursor.execute("SELECT * FROM ToDoItems;")
 rows = cursor.fetchall()
 print("Rows in ToDoItems after reset:", rows)

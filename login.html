@@ -69,10 +69,10 @@
                     return response.json();
                 })
                 .then(data => {
-                    // Store token or set logged-in state
                     localStorage.setItem("loggedIn", "true");
                     localStorage.setItem("username", username);
-                    // Navigate to homepage
+                    localStorage.setItem("password", password);
+                    localStorage.setItem("accountId", data.accountId);
                     window.location.href = "index.html";
                 })
                 .catch(error => {

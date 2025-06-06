@@ -100,19 +100,38 @@
 
     <script>
         const apiUrl = "http://localhost:5144/api/todo";
+        const username = localStorage.getItem("username");
+        const accountId = parseInt(localStorage.getItem("accountId"));
 
         async function fetchTodos() {
-            const res = await fetch(apiUrl);
-            const todos = await res.json();
-            return todos;
+            const username = localStorage.getItem("username");
+            try {
+                const res = await fetch(`${apiUrl}?username=${username}`);
+
+                if (!res.ok) {
+                    const errorText = await res.text();
+                    throw new Error(`Error ${res.status}: ${errorText}`);
+                }
+
+                return await res.json();
+            } catch (error) {
+                console.error("Failed to fetch todos:", error);
+                alert("Error loading todos: " + error.message);
+                return [];
+            }
         }
 
         async function addTodo(task, deadline) {
+
             const res = await fetch(apiUrl, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ task: task, isDone: false, deadline: deadline || null })
+                body: JSON.stringify({ task: task, isDone: false, deadline: deadline || null, accountId })
             });
+            if (!res.ok) {
+                const errorText = await res.text(); 
+                throw new Error("Server Error: " + errorText);
+            }
             return await res.json();
         }
 

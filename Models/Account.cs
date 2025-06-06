@@ -21,6 +21,7 @@ namespace ToDoApp.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+        public ICollection<ToDoItem> ToDoItems { get; set; } = new List<ToDoItem>();
         // Optional: you can add more fields here, like Role, IsActive, etc.
     }
 }
