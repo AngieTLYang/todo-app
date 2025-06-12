@@ -1,11 +1,58 @@
 {
   "Version": 1,
-  "Hash": "8CdKc1JnM5h7q38JjGASXL2lhbPzyk+6AeXXRuZVjxY=",
+  "Hash": "8kaOzJ9kIMfrhShFragOsIkMJRN2Sc0kSG/c9d3x01M=",
   "Source": "ToDoApp",
   "BasePath": "_content/ToDoApp",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
-  "Assets": []
+  "DiscoveryPatterns": [
+    {
+      "Name": "ToDoApp\\wwwroot",
+      "Source": "ToDoApp",
+      "ContentRoot": "C:\\Users\\88690\\Desktop\\ToDoApp\\ToDoApp\\wwwroot\\",
+      "BasePath": "_content/ToDoApp",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\88690\\Desktop\\ToDoApp\\ToDoApp\\wwwroot\\index.html",
+      "SourceId": "ToDoApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\88690\\Desktop\\ToDoApp\\ToDoApp\\wwwroot\\",
+      "BasePath": "_content/ToDoApp",
+      "RelativePath": "index.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\index.html"
+    },
+    {
+      "Identity": "C:\\Users\\88690\\Desktop\\ToDoApp\\ToDoApp\\wwwroot\\login.html",
+      "SourceId": "ToDoApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\88690\\Desktop\\ToDoApp\\ToDoApp\\wwwroot\\",
+      "BasePath": "_content/ToDoApp",
+      "RelativePath": "login.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\login.html"
+    }
+  ]
 }

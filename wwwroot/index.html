@@ -104,9 +104,8 @@
         const accountId = parseInt(localStorage.getItem("accountId"));
 
         async function fetchTodos() {
-            const username = localStorage.getItem("username");
             try {
-                const res = await fetch(`${apiUrl}?username=${username}`);
+                const res = await fetch(apiUrl); // No query params!
 
                 if (!res.ok) {
                     const errorText = await res.text();

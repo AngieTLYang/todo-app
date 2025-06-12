@@ -16,11 +16,25 @@ builder.Services.AddDbContext<ToDoContext>(options =>
 
 builder.Services.AddControllers();
 
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.Cookie.Name = ".ToDoApp.Session";
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 var app = builder.Build();
 
 app.UseCors();
 
+app.UseSession();
+
 app.MapControllers();
+
+app.UseStaticFiles();
 
 app.Run();
 

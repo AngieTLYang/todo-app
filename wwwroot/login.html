@@ -69,10 +69,8 @@
                     return response.json();
                 })
                 .then(data => {
-                    localStorage.setItem("loggedIn", "true");
                     localStorage.setItem("username", username);
                     localStorage.setItem("password", password);
-                    localStorage.setItem("accountId", data.accountId);
                     window.location.href = "index.html";
                 })
                 .catch(error => {

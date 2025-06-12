@@ -18,40 +18,24 @@ public class ToDoController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ToDoItem>>> Get([FromQuery] string username)
+    public async Task<ActionResult<IEnumerable<ToDoItem>>> Get()
     {
-        try
-        {
-            if (string.IsNullOrEmpty(username))
+        var accountId = HttpContext.Session.GetInt32("AccountId");
+
+        if (accountId == null)
+            return Unauthorized("User not logged in");
+
+        var todos = await _context.ToDoItems
+            .Where(todo => todo.AccountId == accountId)
+            .Select(t => new
             {
-                return BadRequest("Username query parameter is required.");
-            }
+                t.Id,
+                t.Task,
+                t.IsDone,
+                t.Deadline
+            }).ToListAsync();
 
-            var account = await _context.Accounts
-                .FirstOrDefaultAsync(acc => acc.Username == username);
-
-            if (account == null)
-            {
-                return NotFound("Account not found");
-            }
-
-            var todos = await _context.ToDoItems
-                .Where(todo => todo.AccountId == account.Id)
-                .Select(t => new
-                {
-                    t.Id,
-                    t.Task,
-                    t.IsDone,
-                    t.Deadline
-                }).ToListAsync();
-
-            return Ok(todos);
-        }
-        catch (Exception ex)
-        {
-            // Return error message in a way that's easy to debug
-            return StatusCode(500, $"Server error: {ex.Message}");
-        }
+        return Ok(todos);
     }
 
     [HttpPost]
@@ -126,10 +110,13 @@ public class AccountController : ControllerBase
         if (user.PasswordHash != hashed)
             return Unauthorized();
 
+        HttpContext.Session.SetInt32("AccountId", user.Id);
+        HttpContext.Session.SetString("Username", user.Username);
+
         return Ok(new
         {
             message = "Login successful",
-            accountId = user.Id,
+            //accountId = user.Id,
         });
     }
 
